@@ -31,6 +31,15 @@ pub struct MakeOffer<'info> {
     pub maker_ata_a: InterfaceAccount<'info, TokenAccount>,
 
     #[account(
+        init_if_needed,
+        payer=maker,
+        associated_token::mint=token_mint_b,
+        associated_token::authority=maker,
+        associated_token::token_program=token_program,
+    )]
+    pub maker_ata_b: InterfaceAccount<'info, TokenAccount>,
+
+    #[account(
         init,
         payer=maker,
         seeds=[

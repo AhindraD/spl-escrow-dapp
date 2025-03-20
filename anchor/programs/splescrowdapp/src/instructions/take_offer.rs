@@ -28,6 +28,7 @@ pub struct TakeOffer<'info> {
         mut,
         has_one=token_mint_a,
         has_one=token_mint_b,
+        constraint = maker.key() == offer.maker,
         close=maker,
         seeds=[
             b"offer",
@@ -45,6 +46,31 @@ pub struct TakeOffer<'info> {
         associated_token::token_program=token_program,
     )]
     pub vault: InterfaceAccount<'info, TokenAccount>,
+
+    #[account(
+            init_if_needed,
+            payer=taker,
+            associated_token::mint=token_mint_b,
+            associated_token::authority=taker,
+            associated_token::token_program=token_program,
+        )]
+    pub taker_ata_a: InterfaceAccount<'info, TokenAccount>,
+
+    #[account(
+        mut,
+        associated_token::mint=token_mint_b,
+        associated_token::authority=taker,
+        associated_token::token_program=token_program,
+    )]
+    pub taker_ata_b: InterfaceAccount<'info, TokenAccount>,
+
+    #[account(
+        mut,
+        associated_token::mint=token_mint_b,
+        associated_token::authority=maker,
+        associated_token::token_program=token_program,
+    )]
+    pub maker_ata_b: InterfaceAccount<'info, TokenAccount>,
 
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub token_program: Interface<'info, TokenInterface>,
